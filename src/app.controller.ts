@@ -1,15 +1,17 @@
-import { Controller, Get, Query} from '@nestjs/common';
+import { Controller, Get, Res, Next, Req } from '@nestjs/common';
+import { Response, NextFunction, Request } from 'express';
 import { AppService } from './app.service';
+import { join } from 'path';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    constructor(private readonly appService: AppService) {}
     @Get('/')
-    getGamePage() {
-      return 'render static game page'
+    getFile(@Res() res: Response, @Next() next: NextFunction, @Req() req: Request) {
+        res.sendFile(join(process.cwd(), 'assets/build/index.html'));
     }
     @Get('/:id')
-    getGame(@Query('id') id: number) {
-      return 'render static game page'
+    getFileParams(@Res() res: Response, @Next() next: NextFunction, @Req() req: Request) {
+        res.sendFile(join(process.cwd(), 'assets/build/index.html'));
     }
 }
