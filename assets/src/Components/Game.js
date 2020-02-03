@@ -7,13 +7,8 @@ class Game extends React.Component {
         super(props);
 
         this.state = {
-            id: 0,
             loading: true,
             error: false,
-            dimension: 3,
-            stepNumber: 0,
-            sequences: ['X', '0'],
-            squares: Array(Math.pow(3, 2)).fill(null)
         };
     }
 
@@ -23,17 +18,19 @@ class Game extends React.Component {
         this.setState({
             loading: true
         });
-    
-        fetch(`http://localhost:33333/game/${id}`, {method: 'GET', mode: 'cors'})
+
+        fetch(`http://localhost:33333/game/${id}`, {method: 'GET', mode: 'cors', cache: 'no-cache'})
             .then(res => res.json())
             .then(
             (result) => {
                 this.setState({
-                    id,
                     loading: false,
-                    squares: result.squares,
-                    sequences: result.sequences,
-                    dimension: Math.sqrt(result.squares.length),
+                    id,
+                    step: result.step,
+                    sequence: result.sequence,
+                    squares: result.squares.map((square) => {
+                        return square === "null" ? null : square
+                    })
                 });
             },
             (error) => {
@@ -62,11 +59,11 @@ class Game extends React.Component {
 
         return (
             <Match
+                sequence={this.state.sequence}
+                step={this.state.step}
+                squares={this.state.squares}
                 id={this.state.id}
-                dimension={this.state.dimension}
-                stepNumber={this.state.stepNumber}
-                sequences={this.state.sequences}
-                squares={this.state.squares} />
+            />
         );
     }
 }

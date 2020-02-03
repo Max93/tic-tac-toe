@@ -4,7 +4,6 @@ import { AppService } from "./app.service";
 import { Connection } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameEntity } from './game/game.entity';
-import { TurnEntity } from './game/turn.entity';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -16,7 +15,7 @@ import { GameModule } from './game/game.module';
       username: 'root',
       password: 'root',
       database: 'tttoe',
-      entities: [GameEntity, TurnEntity],
+      entities: [GameEntity],
       synchronize: true,
     }),
     GameModule,

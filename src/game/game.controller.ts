@@ -4,11 +4,15 @@ import {
   Post,
   Put,
   HttpCode,
-  Query,
-  Body
+  Body,
+  Param
 } from "@nestjs/common";
+
 import { GameService } from "./game.service";
 import { GameEntity } from './game.entity';
+
+import { CreateGameDto } from './create-game.dto';
+import { UpdateGameDto } from './update-game.dto';
 
 @Controller("game")
 export class GameController {
@@ -16,17 +20,17 @@ export class GameController {
 
   @Post()
   @HttpCode(200)
-  createGame(@Body() data: string): Promise<GameEntity> {
-    return this.gameService.create(data);
+  createGame(@Body() createGameDto: CreateGameDto): Promise<GameEntity> {
+    return this.gameService.create(createGameDto);
   }
 
   @Get(":id")
-  getGame(@Query("id") id: number): Promise<GameEntity> {
-    return this.gameService.find(id);
+  getGame(@Param() params): Promise<GameEntity> {
+    return this.gameService.find(params.id);
   }
 
   @Put(":id")
-  updateGame(@Body() data: string, @Query("id") id: number): Promise<GameEntity> {
-    return this.gameService.update(id, data);
+  updateGame(@Body() updateGameDto: UpdateGameDto, @Param() params): Promise<GameEntity> {
+    return this.gameService.update(params.id, updateGameDto);
   }
 }

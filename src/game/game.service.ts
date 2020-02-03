@@ -2,45 +2,38 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GameEntity } from './game.entity';
-import { TurnEntity } from './turn.entity';
-
+import { CreateGameDto } from './create-game.dto';
+import { UpdateGameDto } from './update-game.dto';
 @Injectable()
 export class GameService {
   constructor(
     @InjectRepository(GameEntity)
-    private readonly gameRepository: Repository<GameEntity>,
-    @InjectRepository(TurnEntity)
-    private readonly turnRepository: Repository<TurnEntity>,
+    private readonly gameRepository: Repository<GameEntity>
   ) {}
 
   async find(id): Promise<GameEntity> {
-    return this.gameRepository.findOne(id, { relations: ["turns"] });
+    return this.gameRepository.findOne(id);
   }
 
   async create(data): Promise<GameEntity> {
+    
     const game = new GameEntity();
     game.creation = new Date();
-    game.dimension = 3;
-    game.sequence = ['X', '0'];
 
-    await this.gameRepository.save(game);
+    game.step = 0
+    game.sequence = data.sequence.join(',')
+    game.squares = Array(Math.pow(data.dimenion, 2)).fill("null").join(',')
 
-    return game;
+    return this.gameRepository.save(game);
   }
 
   async update(id, data): Promise<GameEntity> {
-    
-    const game = await this.gameRepository.findOne(id, { relations: ["turns"] });
+  
+    const game = await this.gameRepository.findOne(id);
 
-    const turn = new TurnEntity();
-    turn.stepNumber = 0;
-    turn.squares = Array(Math.pow(3, 2)).fill(null)
-    await this.turnRepository.save(turn);
+    game.step = data.step
+    game.squares = data.squares.join(',')
 
-    game.turns.push(turn);
-
-    await this.gameRepository.save(game);
-
-    return game;
+    return this.gameRepository.save(game);
   }
 }

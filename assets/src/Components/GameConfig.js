@@ -20,13 +20,24 @@ class GameConfig extends React.Component {
         this.setState({
             loading: true
         });
-    
-        fetch("http://localhost:33333/game", {method: 'POST', mode: 'cors'})
+
+        fetch("http://localhost:33333/game", {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            body: JSON.stringify({dimenion: this.state.dimension, sequence: this.state.sequence.filter(seq => {
+                return seq !== ''
+            })}),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
-                        id: result,
+                        id: result.id,
                         loading: false
                     });
                 },
