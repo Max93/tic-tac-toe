@@ -8,6 +8,7 @@ import {
   Body
 } from "@nestjs/common";
 import { GameService } from "./game.service";
+import { GameEntity } from './game.entity';
 
 @Controller("game")
 export class GameController {
@@ -15,17 +16,17 @@ export class GameController {
 
   @Post()
   @HttpCode(200)
-  createGame(@Body() data: string) {
-    return this.gameService.createGame(data);
+  createGame(@Body() data: string): Promise<GameEntity> {
+    return this.gameService.create(data);
   }
 
   @Get(":id")
-  getGame(@Query("id") id: number) {
-    return this.gameService.getGame(id);
+  getGame(@Query("id") id: number): Promise<GameEntity> {
+    return this.gameService.find(id);
   }
 
   @Put(":id")
-  updateGame(@Query("id") id: number, @Body() data: string) {
-    return this.gameService.updateGame(id, data);
+  updateGame(@Body() data: string, @Query("id") id: number): Promise<GameEntity> {
+    return this.gameService.update(id, data);
   }
 }

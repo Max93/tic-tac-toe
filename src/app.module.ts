@@ -1,12 +1,29 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { GameService } from "./game/game.service";
-import { GameController } from "./game/game.controller";
+import { Connection } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GameEntity } from './game/game.entity';
+import { TurnEntity } from './game/turn.entity';
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, GameController],
-  providers: [AppService, GameService]
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'tttoe',
+      entities: [GameEntity, TurnEntity],
+      synchronize: true,
+    }),
+    GameModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly connection: Connection) {}
+}
